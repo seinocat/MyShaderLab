@@ -60,12 +60,6 @@
      <Compile Include="Assets\VoxelToUnity v1.4.3\Editor\VoxData.cs" />
      <Compile Include="Assets\VoxelToUnity v1.4.3\Editor\VoxelToUnityWindow.cs" />
      <Compile Include="Assets\VoxelToUnity v1.4.3\Editor\VoxFile.cs" />
- <Reference Include="Assembly-CSharp">
- <HintPath>D:/MyShaderLab/Library/ScriptAssemblies/Assembly-CSharp.dll</HintPath>
- </Reference>
- <Reference Include="Assembly-UnityScript">
- <HintPath>D:/MyShaderLab/Library/ScriptAssemblies/Assembly-UnityScript.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/unity2017/Unity2017.4.1f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -72,7 +72,7 @@
 			SnowThreshold = saturate(SnowThreshold / _SnowDepth);
 			// SnowThreshold = saturate(_SnowDepth / SnowThreshold);
 			color.rgb = lerp(color, _SnowColor, SnowThreshold);
-			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种卡通风格的渲染，在这里也就是无光照渲染，看起来很舒服
+			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种卡通风格的渲染，在这里也就是无自阴影渲染
 			fixed3 finalColor = lerp(lightColor, color, SnowThreshold);
 
 			return float4(finalColor, 1);

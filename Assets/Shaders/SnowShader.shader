@@ -16,6 +16,7 @@
 		#include "UnityCG.cginc"
 		#include "Lighting.cginc"
 		#include "AutoLight.cginc"
+
 		sampler2D _MainTex;
 		float4 _MainTex_ST;
 		float4 _SnowColor;
@@ -36,14 +37,11 @@
 			SHADOW_COORDS(3)
 		};
 
-		
-
-
 		v2f vert(a2v v) {
 			v2f o;
-
+			
 			o.pos = UnityObjectToClipPos(v.vertex);
-			o.worldNormal = normalize(UnityObjectToWorldNormal(v.normal));
+			o.worldNormal = UnityObjectToWorldNormal(v.normal);
 			o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 			o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 			
@@ -55,24 +53,26 @@
 			//使用Lambert光照模型
 			fixed3 albedo = tex2D(_MainTex, i.uv).rgb;
 			//入射光方向
-			fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+			fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			//世界法线
+			fixed3 worldNormal = normalize(i.worldNormal);
 			//环境光
 			fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 			//漫反射光照
-			fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(i.worldNormal, worldLightDir));
+			fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, -worldLightDir));
 			//统一光照衰减和阴影
 			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 			//混合光照
 			fixed3 lightColor = diffuse * atten + ambient;
 			//纹理采样
 			fixed4 color = tex2D(_MainTex, i.uv);
-			//计算阈值，以世界法线和垂直方向夹角点积作为积雪厚度判断标准，
-			//一般来说，夹角越小积雪越厚
+			//计算阈值，以世界法线和垂直方向夹角点积作为积雪厚度判断标准
+			//一般来说，夹角越小(点积值越大)积雪越厚
 			half SnowThreshold = dot(i.worldNormal, float3(0, 1, 0)) - lerp(1, -1, _SnowLevel);
 			SnowThreshold = saturate(SnowThreshold / _SnowDepth);
 			// SnowThreshold = saturate(_SnowDepth / SnowThreshold);
 			color.rgb = lerp(color, _SnowColor, SnowThreshold);
-			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种类似卡通风格的渲染，在这里也就是不计算光照
+			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种类似卡通风格的渲染，也就是不计算光照
 			fixed3 finalColor = lerp(lightColor, color, SnowThreshold);
 
 			return float4(finalColor, 1);

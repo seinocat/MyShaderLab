@@ -138,7 +138,7 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SnowDepth: 0.084
-    - _SnowLevel: 0.078
+    - _SnowLevel: 0.073
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0

@@ -50,7 +50,10 @@
 		}
 
 		fixed4 frag(v2f i) : SV_Target{
+
 			//使用Lambert光照模型
+
+			//漫反射率
 			fixed3 albedo = tex2D(_MainTex, i.uv).rgb;
 			//入射光方向
 			fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
@@ -66,13 +69,14 @@
 			fixed3 lightColor = diffuse * atten + ambient;
 			//纹理采样
 			fixed4 color = tex2D(_MainTex, i.uv);
-			//计算阈值，以世界法线和垂直方向夹角点积作为积雪厚度判断标准
+
+			//计算阈值，以世界法线和垂直方向夹角点积作为积雪厚度判断标准,参数Snowlevel,SnowDepth一起控制积雪程度
 			//一般来说，夹角越小(点积值越大)积雪越厚
 			half SnowThreshold = dot(i.worldNormal, float3(0, 1, 0)) - lerp(1, -1, _SnowLevel);
 			SnowThreshold = saturate(SnowThreshold / _SnowDepth);
 			// SnowThreshold = saturate(_SnowDepth / SnowThreshold);
 			color.rgb = lerp(color, _SnowColor, SnowThreshold);
-			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种类似卡通风格的渲染，也就是不计算光照
+			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种类似卡通风格的渲染(也就是只有color作为输出)
 			fixed3 finalColor = lerp(lightColor, color, SnowThreshold);
 
 			return float4(finalColor, 1);

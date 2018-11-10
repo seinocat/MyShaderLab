@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Free_Tree
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 19dbf5d7321e2874093422614cb194ab, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -67,8 +67,8 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
-    - _SnowDepth: 0.248
-    - _SnowLevel: 0.36
+    - _SnowDepth: 0.233
+    - _SnowLevel: 0.31
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0

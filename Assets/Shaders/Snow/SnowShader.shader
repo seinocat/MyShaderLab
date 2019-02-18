@@ -4,7 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_SnowColor ("Snow Color", Color) = (1.0, 1.0, 1.0, 1.0)
-		_SnowLevel ("Snow Level", Range(0, 1)) = 0
+		_SnowLevel ("Snow Level", Range(0, 0.4)) = 0
 		_SnowDepth ("Snow Depth", Range(0, 0.5)) = 0.1
 	}
 	
@@ -51,15 +51,17 @@
 
 		fixed4 frag(v2f i) : SV_Target{
 			//使用Lambert光照模型
+
+			//采样反射率
 			fixed3 albedo = tex2D(_MainTex, i.uv).rgb;
-			//入射光方向
-			fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			//入射光方向(对指向光源方向取反)
+			fixed3 worldLightDir = -normalize(UnityWorldSpaceLightDir(i.worldPos)); //unityworldspacelightdir函数为获取指向光源方向
 			//世界法线
 			fixed3 worldNormal = normalize(i.worldNormal);
 			//环境光
 			fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 			//漫反射光照
-			fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, -worldLightDir));
+			fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 			//统一光照衰减和阴影
 			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 			//混合光照
@@ -69,7 +71,7 @@
 			//计算阈值，以世界法线和垂直方向夹角点积作为积雪厚度判断标准
 			//一般来说，夹角越小(点积值越大)积雪越厚
 			half SnowThreshold = dot(i.worldNormal, float3(0, 1, 0)) - lerp(1, -1, _SnowLevel);
-			SnowThreshold = saturate(SnowThreshold / _SnowDepth);
+			SnowThreshold = saturate(_SnowDepth / SnowThreshold);
 			// SnowThreshold = saturate(_SnowDepth / SnowThreshold);
 			color.rgb = lerp(color, _SnowColor, SnowThreshold);
 			//混合颜色 输出，这里把插值函数第三个值置为1，可以得到一种类似卡通风格的渲染，也就是不计算光照
